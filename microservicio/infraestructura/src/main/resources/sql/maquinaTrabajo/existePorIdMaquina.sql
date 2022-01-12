@@ -1,0 +1,1 @@
+select count(1) from maquinaTrabajo where id = :id
