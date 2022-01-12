@@ -40,7 +40,7 @@ pipeline{
                 //Esta opción se usa para el checkout sencillo de un microservicio
                 gitCheckout(
                     urlProject:'git@github.com:Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git',
-                    branchProject: '${BRANCH_NAME}', 
+                    branchProject: '*/master',
                 )
 
                 //Esta opción se usa cuando el comun está centralizado para varios microservicios
