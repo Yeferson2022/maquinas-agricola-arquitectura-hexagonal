@@ -6,7 +6,7 @@ pipeline{
     agent any
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '5'))
+        buildDiscarder(logRotator(numToKeepStr: '3'))
         disableConcurrentBuilds()
         gitLabConnection('GitCeiba')
     }
