@@ -73,8 +73,7 @@ pipeline{
                 stage('Test- Frontend'){
                     steps {
                         echo '------------>Test Frontend<------------'
-                        dir("${PROJECT_PATH_FRONT}"){
-                            // comando ejecucion test
+
                         }
                     }
                 }
