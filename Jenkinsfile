@@ -116,4 +116,4 @@ pipeline{
             updateGitlabCommitStatus name: 'IC Jenkins', state: 'success'
         }
     }
-}
+
