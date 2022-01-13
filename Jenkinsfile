@@ -39,8 +39,8 @@ pipeline {
         stage('Compile & Unit Tests') {
             steps{
             echo "------------>Compile & Unit Tests<------------"
-             sh 'chmod +x maquina/gradlew'
-             sh './maquina/gradlew --b ./maquina/build.gradle test'
+             sh 'chmod +x microservicio[maquina]/gradlew'
+             sh './microservicio[maquina]/gradlew --b ./microservicio[maquina]/build.gradle test'
             }
         }
 
