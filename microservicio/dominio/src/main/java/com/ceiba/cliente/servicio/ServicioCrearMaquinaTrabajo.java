@@ -67,8 +67,7 @@ public class ServicioCrearMaquinaTrabajo {
             }
         }
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String caseStartDate = dateFormat.format(result);
-        return caseStartDate;
+        return dateFormat.format(result);
     }
 
 }

@@ -4,7 +4,6 @@ import com.ceiba.BasePrueba;
 import com.ceiba.cliente.modelo.entidad.MaquinaTrabajo;
 import com.ceiba.cliente.puerto.repositorio.RepositorioMaquina;
 import com.ceiba.cliente.servicio.ServicioCrearMaquinaTrabajo;
-import com.ceiba.dominio.excepcion.ExcepcionDuplicidad;
 import com.ceiba.dominio.excepcion.ExcepcionValorInvalido;
 import com.ceiba.maquinaTrabajo.servicio.testdatabuilder.MaquinaTrabajoTestDataBuilder;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +22,7 @@ public class ServicioCrearMaquinaTrabajoTest {
 
     @Test
     public void validarTipoDeTrabajoIncorrectoTest() {
-        MaquinaTrabajo maquinaTrabajo  = new MaquinaTrabajoTestDataBuilder().conTipoTrabajo(4).build();
+        MaquinaTrabajo maquinaTrabajo = new MaquinaTrabajoTestDataBuilder().conTipoTrabajo(4).build();
         RepositorioMaquina repositorioMaquina = Mockito.mock(RepositorioMaquina.class);
         Mockito.when(repositorioMaquina.existePorId(Mockito.anyLong())).thenReturn(true);
         ServicioCrearMaquinaTrabajo servicioCrearMaquinaTrabajo = new ServicioCrearMaquinaTrabajo(repositorioMaquina);
@@ -139,8 +138,7 @@ public class ServicioCrearMaquinaTrabajoTest {
             }
         }
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String caseStartDate = dateFormat.format(result);
-        return caseStartDate;
+        return dateFormat.format(result);
     }
 
 }
