@@ -6,13 +6,13 @@ pipeline{
     agent any
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '3'))
+        buildDiscarder(logRotator(numToKeepStr: '5'))
         disableConcurrentBuilds()
         gitLabConnection('GitCeiba')
     }
 
     environment {
-        PROJECT_PATH_BACK = 'microservicio'
+        PROJECT_PATH_BACK = 'maquina'
     }
 
     triggers {
@@ -36,32 +36,36 @@ pipeline{
     stages{
         stage('Checkout') {
             steps {
-                echo "------------>Checkout<------------"
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: '*/master']],
-                        doGenerateSubmoduleConfigurations: false,
-                        extensions: [],
-                        gitTool: 'Default',
-                        submoduleCfg: [],
-                        userRemoteConfigs: [[
-                        credentialsId: 'GitHub_Yeferson2022',
-                        url:'https://github.com/Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git'
-                        ]]
-                    ])
+                echo '------------>Checkout desde Git Microservicio<------------'
+                //Esta opción se usa para el checkout sencillo de un microservicio
+                gitCheckout(
+                    urlProject:'git@github.com:Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git',
+                    branchProject: '${BRANCH_NAME}',
+                )
+
+                //Esta opción se usa cuando el comun está centralizado para varios microservicios
+                /*gitCheckoutWithComun(
+                    urlProject:'git@git.ceiba.com.co:ceiba_legos/revision-blocks.git',
+                    branchProject: '${BRANCH_NAME}',
+                    urlComun: 'git@git.ceiba.com.co:ceiba_legos/comun.git'
+                )*/
+
+                dir("${PROJECT_PATH_BACK}"){
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew clean'
                 }
             }
         }
 
         stage('Compilacion y Test Unitarios'){
-            // El nfigura en otro stage dentro de parallel
+            // El "parallel" es si vamos a correr los test del frontend en paralelo con los test de backend, se configura en otro stage dentro de parallel
             parallel {
                 stage('Test- Backend'){
                     steps {
                         echo '------------>Test Backend<------------'
-                         sh 'chmod +x microservicio/gradlew'
-                         sh './microservicio/gradlew --b ./microservicio/build.gradle test'
-                         }
+                        dir("${PROJECT_PATH_BACK}"){
+                            sh './gradlew --stacktrace test'
+                        }
                     }
                     post{
                         always {
@@ -83,12 +87,12 @@ pipeline{
         }
 
 		stage('Static Code Analysis') {
-        			steps{
-        				sonarqubeMasQualityGates(sonarKey:'co.com.ceiba.adn:[maquinas-agricola-arquitectura-hexagonal-yeferson.palacio]',
-        				sonarName:'CeibaADN-maquinas-agricola-arquitectura-hexagonal(yeferson.palacio)',
-        				sonarPathProperties:'./sonar-project.properties')
-        			}
-        }
+			steps{
+				sonarqubeMasQualityGates(sonarKey:'co.com.ceiba.adn:[maquinas-agricola-arquitectura-hexagonal-yeferson.palacio]',
+				sonarName:'CeibaADN-maquinas-agricola-arquitectura-hexagonal(yeferson.palacio)',
+				sonarPathProperties:'./sonar-project.properties')
+			}
+		}
 
         stage('Build'){
             parallel {
