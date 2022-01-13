@@ -1,119 +1,86 @@
-@Library('ceiba-jenkins-library@master') _
-pipeline{
-	// any -> tomaria slave 5 u 8
-	// Para mobile se debe especificar el slave -> {label 'Slave_Mac'}
-	// Para proyectos de arus se debe tomar el slave 6 o 7 -> {label 'Slave6'} o {label 'Slave7'}
-    agent any
-
+pipeline {
+    //Donde se va a ejecutar el Pipeline
+    agent {
+        label 'Slave_Induccion'
+    }
+    //Opciones específicas de Pipeline dentro del Pipeline
     options {
-        buildDiscarder(logRotator(numToKeepStr: '5'))
-        disableConcurrentBuilds()
-        gitLabConnection('GitCeiba')
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+         disableConcurrentBuilds()
     }
 
-    environment {
-        PROJECT_PATH_BACK = 'maquina'
-    }
-
-    triggers {
-        // @yearly, @annually, @monthly, @weekly, @daily, @midnight, and @hourly o definir un intervalo. Ej: H */4 * * 1-5
-        pollSCM('@weekly') //define un intervalo regular en el que Jenkins debería verificar los cambios de fuente nuevos
-    }
-
+    //Una sección que define las herramientas “preinstaladas” en Jenkins
     tools {
-        jdk 'JDK8_Centos'
+        jdk 'JDK11_Centos' //Verisión preinstalada en la Configuración del Master
     }
 
-    // Parametros disponibles en jenkins
-     /*parameters{
-            string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-            text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-            booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-            choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
-            password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a passwor')
-     }*/
-
+    //Aquí comienzan los “items” del Pipeline
     stages{
+
         stage('Checkout') {
-            steps {
-                echo '------------>Checkout desde Git Microservicio<------------'
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/master']],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [],
-                    gitTool: 'Default',
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[
-                    credentialsId: 'GitHub_Yeferson2022',
-                    url:'https://github.com/Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git'
-                    ]]
-                ])
+            steps{
+            echo "------------>Checkout<------------"
+            checkout([
+                $class: 'GitSCM',
+                branches: [[name: '*/master']],
+                doGenerateSubmoduleConfigurations: false,
+                extensions: [],
+                gitTool: 'Default',
+                submoduleCfg: [],
+                userRemoteConfigs: [[
+                credentialsId: 'GitHub_Yeferson2022',
+                url:'https://github.com/Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git'
+                ]]
+            ])
+
             }
         }
 
-        stage('Compilacion y Test Unitarios'){
-            // El "parallel" es si vamos a correr los test del frontend en paralelo con los test de backend, se configura en otro stage dentro de parallel
-            parallel {
-                stage('Test- Backend'){
-                    steps {
-                        echo '------------>Test Backend<------------'
-                        dir("${PROJECT_PATH_BACK}"){
-                            sh './gradlew build -x test'
-                        }
-                    }
-                    post{
-                        always {
-                            junit '**/build/test-results/test/*.xml' //Configuración de los reportes de JUnit
-                        }
-                    }
-                }
-                /*
-                stage('Test- Frontend'){
-                    steps {
-                        echo '------------>Test Frontend<------------'
-                        dir("${PROJECT_PATH_FRONT}"){
-                            // comando ejecucion test
-                        }
-                    }
-                }
-                */
+        stage('Compile & Unit Tests') {
+            steps{
+            echo "------------>Compile & Unit Tests<------------"
+            sh 'chmod +x gradlew'
+            sh './gradlew --b ./microservicio/build.gradle test'
             }
         }
 
-		stage('Static Code Analysis') {
-			steps{
-				sonarqubeMasQualityGates(sonarKey:'co.com.ceiba.adn:[maquinas-agricola-arquitectura-hexagonal-yeferson.palacio]',
-				sonarName:'CeibaADN-maquinas-agricola-arquitectura-hexagonal(yeferson.palacio)',
-				sonarPathProperties:'./sonar-project.properties')
-			}
-		}
-
-        stage('Build'){
-            parallel {
-                stage('construcción Backend'){
-                    steps{
-                        echo "------------>Compilación backend<------------"
-                        dir("${PROJECT_PATH_BACK}"){
-                            sh './gradlew build -x test'
-                        }
-                    }
-                }
+        stage('Static Code Analysis') {
+            steps{
+            echo '------------>Análisis de código estático<------------'
+            withSonarQubeEnv('Sonar') {
+                sh "${tool name: 'SonarScanner', type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner"
             }
-         }
+            }
+        }
+
+        stage('Build') {
+           steps {
+            echo "------------>Build<------------"
+            //Construir sin tarea test que se ejecutó previamente
+            sh './gradlew --b ./microservicio/build.gradle clean'
+            sh './gradlew --b ./microservicio/build.gradle build'
+           }
+        }
+
     }
 
     post {
-        failure {
-            mail(
-                to: 'yeferson.palacio@ceiba.com.co',
-                body:"Build failed in Jenkins: Project: ${env.JOB_NAME} Build /n Number: ${env.BUILD_NUMBER} URL de build: ${env.BUILD_NUMBER}/n/nPlease go to ${env.BUILD_URL} and verify the build",
-                subject: "ERROR CI: ${env.JOB_NAME}"
-            )
-            updateGitlabCommitStatus name: 'IC Jenkins', state: 'failed'
+        always {
+          echo 'This will always run'
         }
         success {
-            updateGitlabCommitStatus name: 'IC Jenkins', state: 'success'
+          echo 'This will run only if successful'
+          junit '**/test-results/test/*.xml' //RUTA DE TUS ARCHIVOS .XML
+        }
+        failure {
+          echo 'This will run only if failed'
+        }
+        unstable {
+          echo 'This will run only if the run was marked as unstable'
+        }
+        changed {
+          echo 'This will run only if the state of the Pipeline has changed'
+          echo 'For example, if the Pipeline was previously failing but is now successful'
         }
     }
 }
