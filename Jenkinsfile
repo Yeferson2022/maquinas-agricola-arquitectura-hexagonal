@@ -12,7 +12,7 @@ pipeline{
     }
 
     environment {
-        PROJECT_PATH_BACK = 'microservicio[maquina]'
+        PROJECT_PATH_BACK = 'microservicio'
     }
 
     triggers {
@@ -39,7 +39,7 @@ pipeline{
                 echo '------------>Checkout desde Git Microservicio<------------'
                 //Esta opción se usa para el checkout sencillo de un microservicio
                 gitCheckout(
-                    urlProject:'git@github.com:Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git',
+                    urlProject:'https://github.com/Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git',
                     branchProject: '${BRANCH_NAME}',
                 )
 
