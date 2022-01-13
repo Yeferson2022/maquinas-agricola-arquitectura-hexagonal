@@ -45,8 +45,8 @@ pipeline{
                     gitTool: 'Default',
                     submoduleCfg: [],
                     userRemoteConfigs: [[
-                    credentialsId: 'GitHub_johnLee1501',
-                    url:'https://github.com/johnLee1501/faster-arquitectura-hexagonal.git'
+                    credentialsId: 'GitHub_Yeferson2022',
+                    url:'https://github.com/Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git'
                     ]]
                 ])
             }
