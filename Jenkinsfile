@@ -73,7 +73,8 @@ pipeline{
                 stage('Test- Frontend'){
                     steps {
                         echo '------------>Test Frontend<------------'
-
+                        dir("${PROJECT_PATH_FRONT}"){
+                            // comando ejecucion test
                         }
                     }
                 }
@@ -82,12 +83,12 @@ pipeline{
         }
 
 		stage('Static Code Analysis') {
-			steps{
-				 withSonarQubeEnv('Sonar') {
-				    sh "${tool name: 'SonarScanner', type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner"
-                 }
-                 }
-		}
+        			steps{
+        				sonarqubeMasQualityGates(sonarKey:'co.com.ceiba.adn:[maquinas-agricola-arquitectura-hexagonal-yeferson.palacio]',
+        				sonarName:'CeibaADN-maquinas-agricola-arquitectura-hexagonal(yeferson.palacio)',
+        				sonarPathProperties:'./sonar-project.properties')
+        			}
+        }
 
         stage('Build'){
             parallel {
