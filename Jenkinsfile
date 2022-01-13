@@ -58,8 +58,8 @@ pipeline{
                 stage('Test- Backend'){
                     steps {
                         echo '------------>Test Backend<------------'
-                        sh 'chmod +x microservicio/gradlew'
-                        sh './microservicio/gradlew --b ./microservicio/build.gradle test'
+                        dir("${PROJECT_PATH_BACK}"){
+                            sh './gradlew --stacktrace test'
                         }
                     }
                     post{
@@ -116,4 +116,4 @@ pipeline{
             updateGitlabCommitStatus name: 'IC Jenkins', state: 'success'
         }
     }
-
+}
