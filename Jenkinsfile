@@ -84,10 +84,10 @@ pipeline{
 
 		stage('Static Code Analysis') {
 			steps{
-				sonarqubeMasQualityGates(sonarKey:'co.com.ceiba.adn:[maquinas-agricola-arquitectura-hexagonal-yeferson.palacio]',
-				sonarName:'CeibaADN-maquinas-agricola-arquitectura-hexagonal(yeferson.palacio)',
-				sonarPathProperties:'./sonar-project.properties')
-			}
+				 withSonarQubeEnv('Sonar') {
+				    sh "${tool name: 'SonarScanner', type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner"
+                 }
+                 }
 		}
 
         stage('Build'){
