@@ -48,8 +48,7 @@ pipeline{
                         credentialsId: 'GitHub_Yeferson2022',
                         url:'https://github.com/Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git'
                         ]]
-                    ])
-
+                }    ])
             }
         }
 
