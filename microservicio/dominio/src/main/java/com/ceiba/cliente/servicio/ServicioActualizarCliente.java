@@ -6,7 +6,7 @@ import com.ceiba.cliente.puerto.repositorio.RepositorioCliente;
 
 public class ServicioActualizarCliente {
 
-    private static final String EL_CLIENTE_NO_EXISTE_EN_EL_SISTEMA = "El no cliente existe en el sistema";
+    private static final String EL_CLIENTE_NO_EXISTE_EN_EL_SISTEMA = "El cliente no existe en el sistema";
 
     private final RepositorioCliente repositorioCliente;
 
