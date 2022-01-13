@@ -58,8 +58,8 @@ pipeline{
                 stage('Test- Backend'){
                     steps {
                         echo '------------>Test Backend<------------'
-                        dir("${PROJECT_PATH_BACK}"){
-                            sh './gradlew --stacktrace test'
+                        sh 'chmod +x microservicio/gradlew'
+                        sh './microservicio/gradlew --b ./microservicio/build.gradle test'
                         }
                     }
                     post{
