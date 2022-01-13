@@ -64,4 +64,23 @@ class ConsultaControladorMaquinaTrabajoTest {
                 .andExpect(jsonPath("$[0].fechaProximoMantenimiento", is("01/04/20222")));
 
     }
+    @Test
+    @DisplayName("Deberia listar servicios prestados por la identificacion del cliente")
+    void deberiaListarServiciosIdentificacionCliente() throws Exception {
+        // arrange
+        String identificacion = "1094580";
+        // act - assert
+        mocMvc.perform(get("/maquinas/Cliente/{identificacion}", identificacion)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].identificacionMaquina", is("Ford 5000")))
+                .andExpect(jsonPath("$[0].tipoTrabajo", is(1)))
+                .andExpect(jsonPath("$[0].cantidadHorasCargas", is(11)))
+                .andExpect(jsonPath("$[0].total", is(440000)))
+                .andExpect(jsonPath("$[0].nombre", is("Yeferson")))
+                .andExpect(jsonPath("$[0].identificacion", is("1094580")))
+                .andExpect(jsonPath("$[0].vereda", is("Bello Valle")));
+
+    }
 }
