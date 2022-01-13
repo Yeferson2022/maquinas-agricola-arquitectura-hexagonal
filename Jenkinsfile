@@ -58,10 +58,15 @@ pipeline{
                 stage('Test- Backend'){
                     steps {
                         echo '------------>Test Backend<------------'
-                         sh 'chmod +x microservicio/gradlew'
-                         sh './microservicio/gradlew --b ./microservicio/build.gradle test'
+                        dir("${PROJECT_PATH_BACK}"){
+                            sh './gradlew --stacktrace test'
+                        }
                     }
-
+                    post{
+                        always {
+                            junit '**/build/test-results/test/*.xml' //Configuración de los reportes de JUnit
+                        }
+                    }
                 }
                 /*
                 stage('Test- Frontend'){
