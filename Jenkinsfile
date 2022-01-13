@@ -37,23 +37,18 @@ pipeline{
         stage('Checkout') {
             steps {
                 echo '------------>Checkout desde Git Microservicio<------------'
-                //Esta opción se usa para el checkout sencillo de un microservicio
-                gitCheckout(
-                    urlProject:'git@github.com:Yeferson2022/maquinas-agricola-arquitectura-hexagonal.git',
-                    branchProject: '${BRANCH_NAME}',
-                )
-
-                //Esta opción se usa cuando el comun está centralizado para varios microservicios
-                /*gitCheckoutWithComun(
-                    urlProject:'git@git.ceiba.com.co:ceiba_legos/revision-blocks.git',
-                    branchProject: '${BRANCH_NAME}',
-                    urlComun: 'git@git.ceiba.com.co:ceiba_legos/comun.git'
-                )*/
-
-                dir("${PROJECT_PATH_BACK}"){
-                    sh 'chmod +x ./gradlew'
-                    sh './gradlew clean'
-                }
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/master']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [],
+                    gitTool: 'Default',
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[
+                    credentialsId: 'GitHub_johnLee1501',
+                    url:'https://github.com/johnLee1501/faster-arquitectura-hexagonal.git'
+                    ]]
+                ])
             }
         }
 
