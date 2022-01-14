@@ -1,9 +1,12 @@
 package com.ceiba.cliente.adaptador.repositorio;
 
+import com.ceiba.cliente.adaptador.dao.MapeoCliente;
+import com.ceiba.cliente.adaptador.dao.MapeoClienteServicio;
 import com.ceiba.infraestructura.jdbc.CustomNamedParameterJdbcTemplate;
 import com.ceiba.infraestructura.jdbc.sqlstatement.SqlStatement;
 import com.ceiba.cliente.modelo.entidad.Cliente;
 import com.ceiba.cliente.puerto.repositorio.RepositorioCliente;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +30,10 @@ public class RepositorioClienteMysql implements RepositorioCliente {
     @SqlStatement(namespace="cliente", value="existePorId")
     private static String sqlExistePorId;
 
+    @SqlStatement(namespace="cliente", value="obtenerPorId")
+    private static String sqlObtenerPorId;
+
+
     public RepositorioClienteMysql(CustomNamedParameterJdbcTemplate customNamedParameterJdbcTemplate) {
         this.customNamedParameterJdbcTemplate = customNamedParameterJdbcTemplate;
     }
@@ -40,7 +47,6 @@ public class RepositorioClienteMysql implements RepositorioCliente {
     public void eliminar(Long id) {
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("id", id);
-
         this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().update(sqlEliminar, paramSource);
     }
 
@@ -48,7 +54,6 @@ public class RepositorioClienteMysql implements RepositorioCliente {
     public boolean existe(String nombre) {
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("nombre", nombre);
-
         return this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().queryForObject(sqlExiste,paramSource, Boolean.class);
     }
 
@@ -62,5 +67,11 @@ public class RepositorioClienteMysql implements RepositorioCliente {
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("id", id);
         return this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().queryForObject(sqlExistePorId,paramSource, Boolean.class);
+    }
+    @Override
+    public Cliente obtenerId(Long id) {
+        MapSqlParameterSource paramSource = new MapSqlParameterSource();
+        paramSource.addValue("id", id);
+        return this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().queryForObject(sqlObtenerPorId,paramSource,  new MapeoClienteServicio());
     }
 }

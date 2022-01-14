@@ -1,0 +1,1 @@
+select count(1) from servicioPrestado where identificacionMaquina = :identificacionMaquina

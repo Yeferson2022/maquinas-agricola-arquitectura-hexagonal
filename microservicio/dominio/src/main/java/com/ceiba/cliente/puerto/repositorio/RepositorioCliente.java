@@ -14,4 +14,6 @@ public interface RepositorioCliente {
 
     boolean existePorId(Long id);
 
+    Cliente obtenerId(Long id);
+
 }
