@@ -1,19 +1,14 @@
 package com.ceiba.cliente.adaptador.repositorio;
 
-import com.ceiba.cliente.modelo.entidad.Cliente;
 import com.ceiba.cliente.modelo.entidad.ServicioPrestado;
+import com.ceiba.cliente.puerto.repositorio.RepositorioServicioPrestado;
 import com.ceiba.infraestructura.jdbc.CustomNamedParameterJdbcTemplate;
 import com.ceiba.infraestructura.jdbc.sqlstatement.SqlStatement;
-import com.ceiba.cliente.puerto.repositorio.RepositorioServicioPrestado;
 import com.ceiba.infraestructura.jdbc.sqlstatement.StatementException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-
-import java.io.IOException;
-import java.time.LocalDate;
 
 @Repository
 public class RepositorioServicioPrestadoTrabajoMysql implements RepositorioServicioPrestado {
@@ -51,11 +46,10 @@ public class RepositorioServicioPrestadoTrabajoMysql implements RepositorioServi
         paramSource.addValue("fechaProximoMantenimiento", servicioPrestado.getFechaProximoMantenimiento());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().update(sqlCrearServicioPrestado, paramSource, keyHolder, new String[]{"id"});
-        try {
-            return keyHolder.getKey().longValue();
-        } catch (Exception e) {
-            throw new StatementException("No se encontró el id");
-        }
+        Number key = keyHolder.getKey();
+        final long l = key != null ? key.longValue() : 0l;
+        return keyHolder.getKey().longValue();
+
 
     }
 
