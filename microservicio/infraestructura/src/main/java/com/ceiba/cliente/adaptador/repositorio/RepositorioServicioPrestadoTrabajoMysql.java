@@ -47,10 +47,8 @@ public class RepositorioServicioPrestadoTrabajoMysql implements RepositorioServi
         KeyHolder keyHolder = new GeneratedKeyHolder();
         this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().update(sqlCrearServicioPrestado, paramSource, keyHolder, new String[]{"id"});
         Number key = keyHolder.getKey();
-        final long l = key != null ? key.longValue() : 0l;
-        return keyHolder.getKey().longValue();
-
-
+        long idCliente = key != null ? key.longValue() : 0l;
+        return idCliente;
     }
 
     @Override
