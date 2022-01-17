@@ -1,15 +1,17 @@
 package com.ceiba.servicioPrestado.servicio.testdatabuilder;
 
+import com.ceiba.cliente.modelo.entidad.Cliente;
 import com.ceiba.cliente.modelo.entidad.ServicioPrestado;
+import com.ceiba.cliente.servicio.testdatabuilder.ClienteTestDataBuilder;
 
 import java.time.LocalDate;
 
 public class ServicioPrestadoTestDataBuilder {
 
     private Long id;
-    private Long idCliente;
+    private Cliente cliente;
     private String identificacionMaquina;
-    private int tipoTrabajo;
+    private Integer tipoTrabajo;
     private Long cantidadHorasCargas;
     private Long total;
     private LocalDate fechaUltimoMantenimiento;
@@ -17,7 +19,7 @@ public class ServicioPrestadoTestDataBuilder {
 
     public ServicioPrestadoTestDataBuilder() {
 
-        idCliente = 1l;
+        cliente = new ClienteTestDataBuilder().build();
         identificacionMaquina = "Ford 6600";
         tipoTrabajo = 1;
         cantidadHorasCargas = 11l;
@@ -32,13 +34,13 @@ public class ServicioPrestadoTestDataBuilder {
         return this;
     }
 
-    public ServicioPrestadoTestDataBuilder conIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
+    public ServicioPrestadoTestDataBuilder conIdentificacion(String identificacionMaquina) {
+        this.identificacionMaquina = identificacionMaquina;
         return this;
     }
 
-    public ServicioPrestadoTestDataBuilder conIdentificacion(String identificacionMaquina) {
-        this.identificacionMaquina = identificacionMaquina;
+    public ServicioPrestadoTestDataBuilder conCliente(Cliente cliente) {
+        this.cliente = cliente;
         return this;
     }
 
@@ -53,6 +55,6 @@ public class ServicioPrestadoTestDataBuilder {
     }
 
     public ServicioPrestado build() {
-        return new ServicioPrestado(id, identificacionMaquina, tipoTrabajo, cantidadHorasCargas, total, fechaUltimoMantenimiento, fechaProximoMantenimiento);
+        return new ServicioPrestado(id, cliente, identificacionMaquina, tipoTrabajo, cantidadHorasCargas, total, fechaUltimoMantenimiento, fechaProximoMantenimiento);
     }
 }

@@ -2,13 +2,12 @@ package com.ceiba.servicioPrestado.entidad;
 
 import com.ceiba.BasePrueba;
 import com.ceiba.cliente.modelo.entidad.ServicioPrestado;
-import com.ceiba.cliente.puerto.repositorio.RepositorioServicioPrestado;
 import com.ceiba.dominio.excepcion.ExcepcionValorInvalido;
+import com.ceiba.dominio.excepcion.ExcepcionValorObligatorio;
 import com.ceiba.servicioPrestado.servicio.testdatabuilder.ServicioPrestadoTestDataBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -16,6 +15,54 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ServicioPrestadoTest {
+
+    @Test
+    void deberiaFallarSinIdentificacionMaquina() {
+
+        //Arrange
+        ServicioPrestadoTestDataBuilder servicioPrestadoTestDataBuilder = new ServicioPrestadoTestDataBuilder().conIdentificacion(null).conId(1L);
+        //act-assert
+        BasePrueba.assertThrows(() -> {
+                    servicioPrestadoTestDataBuilder.build();
+                },
+                ExcepcionValorObligatorio.class, "Se debe ingresar la identificacion de la maquina");
+    }
+
+    @Test
+    void deberiaFallarSinCantidadHorasCargas() {
+
+        //Arrange
+        ServicioPrestadoTestDataBuilder servicioPrestadoTestDataBuilder = new ServicioPrestadoTestDataBuilder().conCantidadHorasCargas(null).conId(1L);
+        //act-assert
+        BasePrueba.assertThrows(() -> {
+                    servicioPrestadoTestDataBuilder.build();
+                },
+                ExcepcionValorObligatorio.class, "Se debe ingresar la cantidad de horas o cargas");
+    }
+
+    @Test
+    void deberiaFallarSinIdCliente() {
+
+        //Arrange
+        ServicioPrestadoTestDataBuilder servicioPrestadoTestDataBuilder = new ServicioPrestadoTestDataBuilder().conCliente(null).conId(1L);
+        //act-assert
+        BasePrueba.assertThrows(() -> {
+                    servicioPrestadoTestDataBuilder.build();
+                },
+                ExcepcionValorObligatorio.class, "se debe ingresar el id del cliente");
+    }
+
+    @Test
+    void deberiaFallarSinTipoTrabajo() {
+
+        //Arrange
+        ServicioPrestadoTestDataBuilder servicioPrestadoTestDataBuilder = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(null).conId(1L);
+        //act-assert
+        BasePrueba.assertThrows(() -> {
+                    servicioPrestadoTestDataBuilder.build();
+                },
+                ExcepcionValorObligatorio.class, "Se debe ingresar el tipo de trabajo");
+    }
 
     @Test
     @DisplayName("Deberia crear correctamente el Trabajo de la Maquina")
@@ -32,11 +79,9 @@ public class ServicioPrestadoTest {
 
     @Test
     public void validarTipoDeTrabajoIncorrectoTest() {
-        ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(4).build();
-        RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existePorId(Mockito.anyLong())).thenReturn(true);
+        ServicioPrestadoTestDataBuilder servicioPrestadoTestDataBuilder = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(4);
         // act - assert
-        BasePrueba.assertThrows(() -> servicioPrestado.calcularTotal(), ExcepcionValorInvalido.class, "El tipo de trabajo no esta permitido en el sistema");
+        BasePrueba.assertThrows(() -> servicioPrestadoTestDataBuilder.build(), ExcepcionValorInvalido.class, "El tipo de trabajo no esta permitido en el sistema");
     }
 
     @Test
@@ -44,8 +89,6 @@ public class ServicioPrestadoTest {
         ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(1).build();
         LocalDate date = servicioPrestado.getFechaUltimoMantenimiento();
         LocalDate fechaMantenimiento = addDias(date, 40);
-        RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existePorId(Mockito.anyLong())).thenReturn(true);
         // act
         servicioPrestado.calcularTotal();
         // assert
@@ -57,8 +100,6 @@ public class ServicioPrestadoTest {
         ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(2).build();
         LocalDate date = servicioPrestado.getFechaUltimoMantenimiento();
         LocalDate fechaMantenimiento = addDias(date, 50);
-        RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existePorId(Mockito.anyLong())).thenReturn(true);
         // act
         servicioPrestado.calcularTotal();
         // assert
@@ -70,8 +111,6 @@ public class ServicioPrestadoTest {
         ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(3).build();
         LocalDate date = servicioPrestado.getFechaUltimoMantenimiento();
         LocalDate fechaMantenimiento = addDias(date, 60);
-        RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existePorId(Mockito.anyLong())).thenReturn(true);
         // act
         servicioPrestado.calcularTotal();
         // assert
@@ -82,8 +121,6 @@ public class ServicioPrestadoTest {
     public void validarTotalDelTrabajoAlClienteTipoDeTrabajoUnoTest() {
         ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(1).build();
         Long total = 40000 * servicioPrestado.getCantidadHorasCargas();
-        RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existePorId(Mockito.anyLong())).thenReturn(true);
         // act
         servicioPrestado.calcularTotal();
         // assert
@@ -94,8 +131,6 @@ public class ServicioPrestadoTest {
     public void validarTotalDelTrabajoAlClienteTipoDeTrabajoDosTest() {
         ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(2).build();
         Long total = 50000 * servicioPrestado.getCantidadHorasCargas();
-        RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existePorId(Mockito.anyLong())).thenReturn(true);
         // act
         servicioPrestado.calcularTotal();
         // assert
@@ -106,8 +141,6 @@ public class ServicioPrestadoTest {
     public void validarTotalDelTrabajoAlClienteTipoDeTrabajoTresTest() {
         ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().conTipoTrabajo(3).build();
         Long total = 20000 * servicioPrestado.getCantidadHorasCargas();
-        RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existePorId(Mockito.anyLong())).thenReturn(true);
         // act
         servicioPrestado.calcularTotal();
         // assert

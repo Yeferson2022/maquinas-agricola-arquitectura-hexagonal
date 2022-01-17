@@ -15,6 +15,7 @@ public class ServicioPrestado {
     private static final String SE_DEBE_INGRESAR_EL_TIPO_DE_TRABAJO = "Se debe ingresar el tipo de trabajo";
     private static final String SE_DEBE_INGRESAR_LA_CANTIDAD_DE_HORAS_O_CARGAS = "Se debe ingresar la cantidad de horas o cargas";
     private static final String SE_DEBE_INGRESAR_LA_IDENTIFICACION_DE_LA_MAQUINA = "Se debe ingresar la identificacion de la maquina";
+    private static final String SE_DEBE_INGRESAR_EL_ID_DEL_CLIENTE = "se debe ingresar el id del cliente";
 
 
     private Long id;
@@ -41,6 +42,7 @@ public class ServicioPrestado {
         validarObligatorio(identificacionMaquina, SE_DEBE_INGRESAR_LA_IDENTIFICACION_DE_LA_MAQUINA);
         validarObligatorio(tipoTrabajo, SE_DEBE_INGRESAR_EL_TIPO_DE_TRABAJO);
         validarObligatorio(cantidadHorasCargas, SE_DEBE_INGRESAR_LA_CANTIDAD_DE_HORAS_O_CARGAS);
+        validarObligatorio(cliente, SE_DEBE_INGRESAR_EL_ID_DEL_CLIENTE);
 
         this.id = id;
         this.cliente = cliente;
@@ -86,13 +88,4 @@ public class ServicioPrestado {
         return result;
     }
 
-    public ServicioPrestado(Long id, String identificacionMaquina, int tipoTrabajo, Long cantidadHorasCargas, Long total, LocalDate fechaUltimoMantenimiento, LocalDate fechaProximoMantenimiento) {
-        this.id = id;
-        this.identificacionMaquina = identificacionMaquina;
-        this.tipoTrabajo = tipoTrabajo;
-        this.cantidadHorasCargas = cantidadHorasCargas;
-        this.total = total;
-        this.fechaUltimoMantenimiento = fechaUltimoMantenimiento;
-        this.fechaProximoMantenimiento = fechaProximoMantenimiento;
-    }
 }
