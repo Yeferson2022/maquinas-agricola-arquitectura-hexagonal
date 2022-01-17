@@ -14,12 +14,11 @@ public class ServicioCrearServicioPrestadoTest {
 
 
     @Test
-    @DisplayName("Deberia Crear el Trabajo de manera correcta")
-    void deberiaCrearElTrabajoDeManeraCorrecta() {
+    @DisplayName("Deberia Crear el Servicio de manera correcta")
+    void deberiaCrearElServicioDeManeraCorrecta() {
         // arrange
         ServicioPrestado servicioPrestado = new ServicioPrestadoTestDataBuilder().build();
         RepositorioServicioPrestado repositorioServicioPrestado = Mockito.mock(RepositorioServicioPrestado.class);
-        Mockito.when(repositorioServicioPrestado.existe(Mockito.anyString())).thenReturn(false);
         Mockito.when(repositorioServicioPrestado.crear(servicioPrestado)).thenReturn(10L);
         ServicioCrearServicioPrestado servicioCrearServicioPrestado = new ServicioCrearServicioPrestado(repositorioServicioPrestado);
         // act

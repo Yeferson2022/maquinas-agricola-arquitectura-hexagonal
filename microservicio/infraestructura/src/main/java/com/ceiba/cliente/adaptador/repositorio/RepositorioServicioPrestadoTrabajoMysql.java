@@ -10,6 +10,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.Objects;
+
 @Repository
 public class RepositorioServicioPrestadoTrabajoMysql implements RepositorioServicioPrestado {
 
@@ -46,8 +48,7 @@ public class RepositorioServicioPrestadoTrabajoMysql implements RepositorioServi
         paramSource.addValue("fechaProximoMantenimiento", servicioPrestado.getFechaProximoMantenimiento());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().update(sqlCrearServicioPrestado, paramSource, keyHolder, new String[]{"id"});
-        Number key = keyHolder.getKey();
-        return key != null ? key.longValue() : 0l;
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
@@ -55,13 +56,6 @@ public class RepositorioServicioPrestadoTrabajoMysql implements RepositorioServi
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("id", id);
         this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().update(sqlEliminarServicioPrestado, paramSource);
-    }
-
-    @Override
-    public boolean existe(String identificacionMaquina) {
-        MapSqlParameterSource paramSource = new MapSqlParameterSource();
-        paramSource.addValue("identificacionMaquina", identificacionMaquina);
-        return this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().queryForObject(sqlExisteServicioPrestado, paramSource, Boolean.class);
     }
 
     @Override

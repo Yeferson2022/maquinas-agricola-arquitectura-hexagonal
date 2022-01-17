@@ -10,8 +10,6 @@ public interface RepositorioServicioPrestado {
 
     void eliminar(Long id);
 
-    boolean existe(String identificacionMaquina);
-
     boolean existePorId(Long id);
 
 }
