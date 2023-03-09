@@ -5,11 +5,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DtoCliente {
+public class DtoServicioPrestadoCliente {
 
     private Long id;
+    private String identificacionMaquina;
+    private int tipoTrabajo;
+    private Long cantidadHorasCargas;
+    private Long total;
     private String nombre;
     private String identificacion;
     private String vereda;
-
 }
